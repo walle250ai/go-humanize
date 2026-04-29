@@ -98,6 +98,50 @@ func CommafWithDigits(f float64, decimals int) string {
 	return stripTrailingDigits(Commaf(f), decimals)
 }
 
+// CommafWithPrecision formats a float64 number with thousands separators and
+// the specified number of decimal places. It aligns with the behavior
+// of strconv.FormatFloat with 'f' format.
+//
+// - Integer part gets comma separators every three digits
+// - Decimal part retains exactly 'digits' places
+// - When digits = 0, no decimal point is output
+// - Negative numbers have the minus sign at the front
+//
+// e.g. CommafWithPrecision(1234567.89, 2) -> "1,234,567.89"
+//
+//	CommafWithPrecision(-1234.5, 0) -> "-1,234"
+func CommafWithPrecision(num float64, digits int) string {
+	buf := &bytes.Buffer{}
+	if num < 0 {
+		buf.Write([]byte{'-'})
+		num = 0 - num
+	}
+
+	formatted := strconv.FormatFloat(num, 'f', digits, 64)
+	parts := strings.Split(formatted, ".")
+
+	comma := []byte{','}
+
+	pos := 0
+	if len(parts[0])%3 != 0 {
+		pos += len(parts[0]) % 3
+		buf.WriteString(parts[0][:pos])
+		buf.Write(comma)
+	}
+	for ; pos < len(parts[0]); pos += 3 {
+		buf.WriteString(parts[0][pos : pos+3])
+		buf.Write(comma)
+	}
+	buf.Truncate(buf.Len() - 1)
+
+	if len(parts) > 1 {
+		buf.Write([]byte{'.'})
+		buf.WriteString(parts[1])
+	}
+
+	return buf.String()
+}
+
 // BigComma produces a string form of the given big.Int in base 10
 // with commas after every three orders of magnitude.
 func BigComma(bin *big.Int) string {

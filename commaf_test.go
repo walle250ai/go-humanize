@@ -43,3 +43,21 @@ func TestBigCommafs(t *testing.T) {
 		{"-10", BigCommaf(big.NewFloat(-10)), "-10"},
 	}.validate(t)
 }
+
+func TestCommafWithPrecision(t *testing.T) {
+	testList{
+		{"positive, digits=2", CommafWithPrecision(1234567.89, 2), "1,234,567.89"},
+		{"negative, digits=2", CommafWithPrecision(-1234567.89, 2), "-1,234,567.89"},
+		{"zero, digits=2", CommafWithPrecision(0, 2), "0.00"},
+		{"positive, digits=0", CommafWithPrecision(1234.56, 0), "1,235"},
+		{"negative, digits=0", CommafWithPrecision(-1234.56, 0), "-1,235"},
+		{"zero, digits=0", CommafWithPrecision(0, 0), "0"},
+		{"positive, digits=4", CommafWithPrecision(123.456789, 4), "123.4568"},
+		{"negative, digits=4", CommafWithPrecision(-123.456789, 4), "-123.4568"},
+		{"zero, digits=4", CommafWithPrecision(0, 4), "0.0000"},
+		{"small positive, digits=2", CommafWithPrecision(1.23, 2), "1.23"},
+		{"large positive, digits=2", CommafWithPrecision(1234567890.12, 2), "1,234,567,890.12"},
+		{"small negative, digits=2", CommafWithPrecision(-1.23, 2), "-1.23"},
+		{"large negative, digits=2", CommafWithPrecision(-1234567890.12, 2), "-1,234,567,890.12"},
+	}.validate(t)
+}
