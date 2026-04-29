@@ -61,5 +61,8 @@ func TestFormatFloatComma(t *testing.T) {
 		{"large negative, digits=2", FormatFloatComma(-1234567890.12, 2), "-1,234,567,890.12"},
 		{"rounding vs truncation: FormatFloatComma rounds", FormatFloatComma(1234.5678, 2), "1,234.57"},
 		{"rounding vs truncation: CommafWithDigits truncates", CommafWithDigits(1234.5678, 2), "1,234.56"},
+		{"NaN", FormatFloatComma(math.NaN(), 2), "NaN"},
+		{"+Inf", FormatFloatComma(math.Inf(1), 2), "+Inf"},
+		{"-Inf", FormatFloatComma(math.Inf(-1), 2), "-Inf"},
 	}.validate(t)
 }
