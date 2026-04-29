@@ -98,19 +98,27 @@ func CommafWithDigits(f float64, decimals int) string {
 	return stripTrailingDigits(Commaf(f), decimals)
 }
 
-// CommafWithPrecision formats a float64 number with thousands separators and
+// FormatFloatComma formats a float64 number with thousands separators and
 // the specified number of decimal places. It aligns with the behavior
 // of strconv.FormatFloat with 'f' format.
 //
+// Key differences from CommafWithDigits:
+//   - FormatFloatComma uses strconv.FormatFloat, which rounds the decimal
+//     part to the specified number of digits (half-to-even rounding)
+//   - CommafWithDigits simply truncates the decimal part without rounding
+//
 // - Integer part gets comma separators every three digits
-// - Decimal part retains exactly 'digits' places
+// - Decimal part retains exactly 'digits' places (with rounding)
 // - When digits = 0, no decimal point is output
 // - Negative numbers have the minus sign at the front
 //
-// e.g. CommafWithPrecision(1234567.89, 2) -> "1,234,567.89"
+// e.g. FormatFloatComma(1234.5678, 2) -> "1,234.57" (rounded)
 //
-//	CommafWithPrecision(-1234.5, 0) -> "-1,234"
-func CommafWithPrecision(num float64, digits int) string {
+//	CommafWithDigits(1234.5678, 2)    -> "1,234.56" (truncated)
+//
+//	FormatFloatComma(1234567.89, 2) -> "1,234,567.89"
+//	FormatFloatComma(-1234.5, 0)     -> "-1,234"
+func FormatFloatComma(num float64, digits int) string {
 	buf := &bytes.Buffer{}
 	if num < 0 {
 		buf.Write([]byte{'-'})
